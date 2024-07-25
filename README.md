@@ -70,6 +70,26 @@ This repo contains information about vector remap language.
 - **Vector Remap Language (VRL)**
   - It is an expression-oriented language designed for transforming observability data (logs and metrics) in a safe and performant manner. It features a simple syntax and a rich set of built-in functions tailored specifically to observability use cases.
 
+- [vector.toml](https://toml.io/en/)
+  - TOML - [Tom's Obvious Minimal Language], A config file format for humans. TOML aims to be a minimal configuration file format that's easy to read due to obvious semantics. TOML is designed to map unambiguously to a hash table. TOML should be easy to parse into data structures in a wide variety of languages.
+  - TOML aims to be a minimal configuration file format that: is easy to read due to obvious semantics maps unambiguously to a hash table is easy to parse into data structures in a wide variety of languages
+  - TOML has useful native types
+    - Key/Value Pairs
+    - Arrays
+    - Tables
+    - Inline tables
+    - Arrays of tables
+    - Integers & Floats
+    - Booleans
+    - Dates & Times, with optional offsets
+- vector.toml
+  - It is a configuration file that defines a dataprocessing pipeline using Vector. It specifies:
+    - API configuration
+    - A file input source
+    - Several transformation steps
+    - An output sink to write the processed data to a file
+
+
 </details>
 
 ----
