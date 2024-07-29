@@ -1,0 +1,22 @@
+[api]
+enabled = true
+address = "0.0.0.0:8686"
+
+[sources.file_input]
+type = "file"
+include = ["/data/input/*.txt"]
+read_from = "beginning"
+fingerprint.strategy = "device_and_inode"
+ignore_older_secs = 600  # Ignore files older than 10 minutes
+
+[transforms.remap_log]
+type = "remap"
+inputs = ["file_input"]
+file = "/etc/vector/microsoft_defender_365_sample_log_parser.vrl"
+
+[sinks.file_output]
+type = "file"
+inputs = ["remap_log"]
+path = "/data/output/processed_logs.json"
+encoding.codec = "json"
+encoding.json.pretty = true 

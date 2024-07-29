@@ -1,0 +1,10 @@
+version: '3'
+services:
+  vector:
+    image: timberio/vector:0.38.0-debian
+    volumes:
+      - ./config:/etc/vector
+      - ./data:/data
+    command: ["--config", "/etc/vector/vector.toml"]
+    ports:
+      - "8686:8686"
