@@ -1,13 +1,9 @@
-# Parse the JSON message
-. = parse_json!(.message)
+# Parse the message as JSON
+.original_event, err = parse_json(.message)
 
-.original_message = encode_json(.)
+# Extract specific fields and transform them
+.tenant_id = .original_event.tenantId
+.threat_classification = .original_event.alertInfo.classification.determination
 
-.alert_id = .id
-.tenant_id = .tenantId
-#.alert_title = alertInfo.title
-#.alert_severity = .alertInfo.severity
-#.alert_status = .alertInfo.status
-
-.device_name = .entities.devices[0].info.name
-.user_name = .entities.users[0].accountName
+del(.message)
+del(.alert_id)

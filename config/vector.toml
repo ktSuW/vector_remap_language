@@ -2,21 +2,33 @@
 enabled = true
 address = "0.0.0.0:8686"
 
+# [sources.stdin]
+# type = "stdin"
+
 [sources.file_input]
 type = "file"
 include = ["/data/input/*.txt"]
 read_from = "beginning"
-fingerprint.strategy = "device_and_inode"
-ignore_older_secs = 600  # Ignore files older than 10 minutes
 
 [transforms.remap_log]
 type = "remap"
 inputs = ["file_input"]
 file = "/etc/vector/microsoft_defender_365_sample_log_parser.vrl"
 
+# [sinks.console]
+# type = "console"
+# inputs = ["remap_log"]
+# encoding.codec = "json"
+
 [sinks.file_output]
 type = "file"
 inputs = ["remap_log"]
-path = "/data/output/processed_logs.json"
+path = "/data/output/processed_logs_%Y-%m-%dT%H:%M:%SZ.json"
 encoding.codec = "json"
-encoding.json.pretty = true 
+encoding.json.pretty = true
+
+[log_schema]
+host_key = "host"
+message_key = "message"
+timestamp_key = "timestamp"
+
