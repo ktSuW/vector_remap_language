@@ -1,9 +1,22 @@
 # Parse the message as JSON
 .original_event, err = parse_json(.message)
 
-# Extract specific fields and transform them
-.tenant_id = .original_event.tenantId
-.threat_classification = .original_event.alertInfo.classification.determination
+if err != null {
+  # If parsing fails, log the error and add an error flag
+  .parse_error = true
+  .error_message = err
+} else {
+
+  .tenant_id = .original_event.tenantId
+  .threat_classification = .original_event.alertInfo.classification.determination
+
+  # ============ Entities 
+  .device_id = []
+  .device_name = []
+
+  # Extract entities information
+  .devices_test = .original_event.entities.devices
+  .processed = true
+}
 
 del(.message)
-del(.alert_id)
