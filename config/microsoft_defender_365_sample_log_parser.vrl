@@ -1,22 +1,21 @@
-# Parse the message as JSON
 .original_event, err = parse_json(.message)
 
 if err != null {
-  # If parsing fails, log the error and add an error flag
   .parse_error = true
   .error_message = err
 } else {
+  .devices_array = .original_event.entities.devices
+  .device_os_platforms = []
 
-  .tenant_id = .original_event.tenantId
-  .threat_classification = .original_event.alertInfo.classification.determination
+  if exists(.original_event.entities) && exists(.original_event.entities.devices) {
+    .devices_array_0 = .devices_array[0]
+    if exists(.devices_array_0.info.os.platform) {
+      .device_os_platforms = append!(.device_os_platforms, .devices_array_0.info.os.platform)
+    }
+  }
 
-  # ============ Entities 
-  .device_id = []
-  .device_name = []
-
-  # Extract entities information
-  .devices_test = .original_event.entities.devices
   .processed = true
 }
 
 del(.message)
+del(.original_event)
