@@ -1,21 +1,12 @@
-.original_event, err = parse_json(.message)
+.puuid = uuid_v4()
+.original_event = parse_json!(.message)
 
-if err != null {
-  .parse_error = true
-  .error_message = err
-} else {
-  .devices_array = .original_event.entities.devices
-  .device_os_platforms = []
+.devices_array = .original_event.entities.devices
+.devices_platform = []
 
-  if exists(.original_event.entities) && exists(.original_event.entities.devices) {
-    .devices_array_0 = .devices_array[0]
-    if exists(.devices_array_0.info.os.platform) {
-      .device_os_platforms = append!(.device_os_platforms, .devices_array_0.info.os.platform)
-    }
-  }
-
-  .processed = true
+.devices_platform = map_values(array(.devices_array) ?? []) -> |device| {
+  device.info.os.platform
 }
 
-del(.message)
 del(.original_event)
+del(.message)
