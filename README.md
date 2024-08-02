@@ -12,6 +12,23 @@ This repo contains information about vector remap language.
 <details>
   <summary> Installation and how to run the file </summary>
 
+- Window
+  - Install the latest version of the Vector CLI
+  - https://packages.timber.io/vector/0.40.0
+    - Download - `vector-0.40.0-x86_64-pc-windows-msvc.zip`
+  - unzip it
+  - `vector/bin/vector.exe --config vector_local_test.toml`
+- Linux
+  - 
+  
+- VRL Playground 
+  - https://play.vrl.dev/
+  - You can test your code and share 
+    - Paste your code into Program
+    - Add your log - if it is in JSON format, use JSON tools to minify it and run
+    - [Shotern URL since they are very very long if you want to share it with your colleague](https://t.ly/)
+    - `https://t.ly/v5zF5`
+
 </details>
 
 ---
@@ -51,13 +68,6 @@ This repo contains information about vector remap language.
       - Timestamp
       - Type
 
-- Code example to loop through nested data
-  - Review the concept first 
-    - Path function ==> exists
-    - Enumerate function ==> for_each
-    - Type function ==> array!
-    - Enumerate function ==> unique
-    - Array function ==> push
 
   - Code 
 
