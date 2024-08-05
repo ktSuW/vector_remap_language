@@ -16,7 +16,7 @@ This repo contains information about vector remap language.
   - Install the latest version of the Vector CLI
   - https://packages.timber.io/vector/0.40.0
     - Download - `vector-0.40.0-x86_64-pc-windows-msvc.zip`
-  - unzip it
+  - unzip it if want to run `vector_local_test.toml` without docker
   - `vector/bin/vector.exe --config vector_local_test.toml`
 - Linux
   - 

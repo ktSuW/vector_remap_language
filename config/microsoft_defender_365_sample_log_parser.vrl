@@ -1,12 +1,65 @@
 .puuid = uuid_v4()
 .original_event = parse_json!(.message)
 
-.devices_array = .original_event.entities.devices
-.devices_platform = []
+.tenan_id = .original_event.tenantId
 
-.devices_platform = map_values(array(.devices_array) ?? []) -> |device| {
+#========= Entities 
+#========= Method 1 - This is working, but methods are repeated. I want to refactor this code.
+.entities_devices_array = .original_event.entities.devices
+.entities_devices_id = []
+.entities_devices_id = map_values(array(.entities_devices_array) ?? []) -> |device| {
+  device.deviceId
+}
+
+.entities_devices_platform = []
+.entities_devices_platform = map_values(array(.entities_devices_array) ?? []) -> |device| {
   device.info.os.platform
 }
 
-del(.original_event)
+.entities_devices_risAssessment_score = []
+.entities_devices_risAssessment_score = map_values(array(.entities_devices_array) ?? []) -> |device| {
+  device.info.riskAssessment.score
+}
+
+.entities_devices_security_defenderAvStatus = []
+.entities_devices_security_defenderAvStatus = map_values(array(.entities_devices_array) ?? []) -> |device| {
+  device.info.security.defenderAvStatus
+}
+
+# #========= Method 2 
+# Question - 1 ==> Is there any way I can refactor above code?, could I use helper function? Below is just a pseudocode. 
+# Question - 2 ==> Is there get_path function similar??
+# def extract_devices_values(devices, path) {
+#   map_values(array(.entities_devices_array) ?? []) -> |device| {
+#     get_path(device, path)
+#   }
+# }
+
+# .entities_devices_array = .original_event.entities.devices
+# # Extract specific fields from devices
+# .entities_devices_id = extract_device_values(.entities_devices_array, "deviceId")
+# .entities_devices_platform = extract_device_values(.entities_devices_array, "info.os.platform")
+# .entities_devices_risAssessment_score = extract_device_values(.entities_devices_array, "info.riskAssessment.score")
+# .entities_devices_security_defenderAvStatus = extract_device_values(.entities_devices_array, "info.security.defenderAvStatus")
+
+#========= alert Info 
+.alert_info = flatten!(.original_event.alertInfo)
+# key is set to current key, value is set to corresponding value, first dot . tells set!() to modify the root object
+for_each(.alert_info) -> |key, value| {
+    . = set!(., ["alert_info_" + key], value)
+}
+
+#========= Investigation
+.investigation = flatten!(.original_event.investigation)
+for_each(.investigation) -> |key, value| {
+  . = set!(., ["investigation_" + key], value)
+}
+
+#========= DELETE unwanted fields 
+
+del(.alert_info)
+del(.entities_devices )
+del(.entities_devices_array)
+del(.investigation)
 del(.message)
+del(.original_event)

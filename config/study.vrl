@@ -1,0 +1,53 @@
+# Parse the JSON message
+.original_event = parse_json!(.message)
+
+# Generate a UUID for the event
+.original_event_id = uuid_v4()
+
+# #********** Compact
+# .before_compact_tags = .original_event.tags 
+# .after_compact_tags = compact!(.before_compact_tags)
+
+# #********** filter
+# .high_ports = []
+# #********** Without using filter
+# if exists(.original_event.source_port) && is_integer(.original_event.source_port) {
+#     source_port = to_int(.original_event.source_port) ?? 0
+#     if source_port > 1024 {
+#         .high_ports = push(.high_ports, source_port)
+#     }
+# }
+
+# destination_port = to_int(.original_event.destination_port)
+# if destination_port > 1024 {
+#     .high_ports = push(.high_ports, destination_port)
+# }
+
+# #********** With using filter
+# # Null coalescing operator
+# # expression ?? default_value. If expression evaluates to null or results in error, default_value is returned instead
+# # https://en.wikipedia.org/wiki/Null_coalescing_operator
+# .high_ports = filter(array!([.original_event.source_port, .original_event.destination_port])) -> |_index, value| {
+#     port_num = to_int(value) ?? 0
+#     port_num > 1024
+# }
+
+#************ Flatten
+
+# .flattened_devices = flatten!(.original_event.nested_array)
+# Flatten array, flatten object
+# .packet_fragments = flatten!(.original_event.packet_capture.fragments)
+# .flattened_network = flatten!(.original_event.network)
+# .flattened_threat_alert = flatten!(.original_event.alert.tags)
+
+#************* for_each
+.before_alert_tags = .original_event.alert.tags
+.after_alert_tags = []
+for_each(array!(.before_alert_tags)) -> |_index, tag| {
+    tag_upper = upcase(tag) ?? tag
+    .after_alert_tags = push(.after_alert_tags, tag_upper) 
+}
+
+
+del(.original_event)
+del(.message)

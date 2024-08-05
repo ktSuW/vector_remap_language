@@ -5,6 +5,10 @@ address = "0.0.0.0:8686"
 [sources.stdin]
 type = "stdin"
 
+# [sources.file_input]
+# type = "file"
+# include = ["./data/input/log.txt"]
+# read_from = "beginning"
 
 [transforms.parse_json_log]
 type = "remap"
