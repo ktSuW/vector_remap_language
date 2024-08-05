@@ -3,63 +3,130 @@
 
 .tenan_id = .original_event.tenantId
 
-#========= Entities 
-#========= Method 1 - This is working, but methods are repeated. I want to refactor this code.
-.entities_devices_array = .original_event.entities.devices
-.entities_devices_id = []
-.entities_devices_id = map_values(array(.entities_devices_array) ?? []) -> |device| {
-  device.deviceId
-}
+# #========= alert Info 
+# .alert_info = flatten!(.original_event.alertInfo)
+# # key is set to current key, value is set to corresponding value, first dot . tells set!() to modify the root object
+# for_each(.alert_info) -> |key, value| {
+#     . = set!(., ["alert_info_" + key], value)
+# }
+# del(.alert_info)
 
-.entities_devices_platform = []
-.entities_devices_platform = map_values(array(.entities_devices_array) ?? []) -> |device| {
-  device.info.os.platform
-}
+# #========= Investigation
+# .investigation = flatten!(.original_event.investigation)
+# for_each(.investigation) -> |key, value| {
+#   . = set!(., ["investigation_" + key], value)
+# }
+# del(.investigation )
 
-.entities_devices_risAssessment_score = []
-.entities_devices_risAssessment_score = map_values(array(.entities_devices_array) ?? []) -> |device| {
-  device.info.riskAssessment.score
-}
+# #========= Entities 
+# #========= User defined VRL functions is yet to be available. Hence, it is not DRY.
+# #========= https://github.com/vectordotdev/vrl/issues/47
+# .entities_devices_array = .original_event.entities.devices
+# .entities_devices_id = []
+# .entities_devices_id = map_values(array(.entities_devices_array) ?? []) -> |device| {
+#   device.deviceId
+# }
+# del(..entities_devices_array)
 
-.entities_devices_security_defenderAvStatus = []
-.entities_devices_security_defenderAvStatus = map_values(array(.entities_devices_array) ?? []) -> |device| {
-  device.info.security.defenderAvStatus
-}
-
-# #========= Method 2 
-# Question - 1 ==> Is there any way I can refactor above code?, could I use helper function? Below is just a pseudocode. 
-# Question - 2 ==> Is there get_path function similar??
-# def extract_devices_values(devices, path) {
-#   map_values(array(.entities_devices_array) ?? []) -> |device| {
-#     get_path(device, path)
-#   }
+# .entities_devices_platform = []
+# .entities_devices_platform = map_values(array(.entities_devices_array) ?? []) -> |device| {
+#   device.info.os.platform
 # }
 
-# .entities_devices_array = .original_event.entities.devices
-# # Extract specific fields from devices
-# .entities_devices_id = extract_device_values(.entities_devices_array, "deviceId")
-# .entities_devices_platform = extract_device_values(.entities_devices_array, "info.os.platform")
-# .entities_devices_risAssessment_score = extract_device_values(.entities_devices_array, "info.riskAssessment.score")
-# .entities_devices_security_defenderAvStatus = extract_device_values(.entities_devices_array, "info.security.defenderAvStatus")
+# .entities_devices_risAssessment_score = []
+# .entities_devices_risAssessment_score = map_values(array(.entities_devices_array) ?? []) -> |device| {
+#   device.info.riskAssessment.score
+# }
 
-#========= alert Info 
-.alert_info = flatten!(.original_event.alertInfo)
-# key is set to current key, value is set to corresponding value, first dot . tells set!() to modify the root object
-for_each(.alert_info) -> |key, value| {
-    . = set!(., ["alert_info_" + key], value)
+# .entities_devices_security_defenderAvStatus = []
+# .entities_devices_security_defenderAvStatus = map_values(array(.entities_devices_array) ?? []) -> |device| {
+#   device.info.security.defenderAvStatus
+# }
+
+#========= Evidence - processes
+.processes_array = flatten!(.original_event.evidence.processes)
+.processes_name = []
+.processes_name = map_values(array(.processes_array) ?? []) -> |process| {
+  if (exists(process.name) && process.name != ""){
+    process.name
+  } else {
+    "unknown process name"
+  }
 }
 
-#========= Investigation
-.investigation = flatten!(.original_event.investigation)
-for_each(.investigation) -> |key, value| {
-  . = set!(., ["investigation_" + key], value)
+
+.processes_commandline = []
+.processes_commandline  = map_values(array(.processes_array) ?? []) -> |process| {
+  if (exists(process.commandLine) && process.commandLine != ""){
+    process.commandLine
+  } else {
+    "unknown commandLine"
+  }
 }
+
+.processes_parentProcess = []
+.processes_parentProcess  = map_values(array(.processes_array) ?? []) -> |process| {
+  if (exists(process.parentProcess) && process.parentProcess != ""){
+    process.parentProcess
+  } else {
+    "unknown parentProcess"
+  }
+} 
+
+
+#========= Evidence - network
+.network_array = flatten!(.original_event.evidence.network)
+.network_application = []
+.network_application = map_values(array(.network_array) ?? []) -> |network| {
+  if (exists(network.application) && network.application != ""){
+    network.application
+  } else {
+    "unknown network application"
+  }
+}
+
+.network_connection_source_address = []
+.network_connection_source_address = map_values(array(.network_array) ?? []) -> |network| {
+  if (exists(network.connection) && network.connection != ""){
+    network.connection.source.address
+  } else {
+    "unknown network connection source connection"
+  }
+}
+.network_connection_source_address = unique(.network_connection_source_address)
+
+.network_connection_source_port = []
+.network_connection_source_port = map_values(array(.network_array) ?? []) -> |network| {
+  if (exists(network.connection) && network.connection != ""){
+    network.connection.source.port
+  } else {
+    "unknown network connection source port"
+  }
+}
+.network_connection_source_port = unique(.network_connection_source_port)
+
+.network_connection_destination_address = []
+.network_connection_destination_address = map_values(array(.network_array) ?? []) -> |network| {
+  if (exists(network.connection) && network.connection != ""){
+    network.connection.destination.address
+  } else {
+    "unknown network connection destination connection"
+  }
+}
+.network_connection_destination_address = unique(.network_connection_destination_address)
+
+.network_connection_destination_port = []
+.network_connection_destination_port = map_values(array(.network_array) ?? []) -> |network| {
+  if (exists(network.connection) && network.connection != ""){
+    network.connection.destination.port
+  } else {
+    "unknown network connection destination port"
+  }
+}
+.network_connection_destination_port = unique(.network_connection_destination_port)
 
 #========= DELETE unwanted fields 
-
-del(.alert_info)
-del(.entities_devices )
-del(.entities_devices_array)
-del(.investigation)
 del(.message)
 del(.original_event)
+del(.processes_array)
+del(.network_array)
