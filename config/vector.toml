@@ -13,7 +13,7 @@ read_from = "beginning"
 [transforms.remap_log]
 type = "remap"
 inputs = ["file_input"]
-file = "/etc/vector/microsoft_defender_365_sample_log_parser.vrl"
+file = "/config/microsoft_defender_365_sample_log_parser.vrl"
 
 # [sinks.console]
 # type = "console"

@@ -1,5 +1,11 @@
 .puuid = uuid_v4()
-.original_event = parse_json!(.message)
+
+.original_event = if exists(.message) {
+    parse_json!(.message)
+} else {
+    {}
+}
+# .original_event = parse_json!(.message)
 
 .tenan_id = .original_event.tenantId
 
@@ -44,38 +50,44 @@
 # }
 
 #========= Evidence - processes
-.processes_array = flatten!(.original_event.evidence.processes)
-.processes_name = []
-.processes_name = map_values(array(.processes_array) ?? []) -> |process| {
-  if (exists(process.name) && process.name != ""){
-    process.name
-  } else {
-    "unknown process name"
-  }
-}
+# .processes_array = flatten!(.original_event.evidence.processes)
+# .processes_name = []
+# .processes_name = map_values(array(.processes_array) ?? []) -> |process| {
+#   if (exists(process.name) && process.name != ""){
+#     process.name
+#   } else {
+#     "unknown process name"
+#   }
+# }
 
 
-.processes_commandline = []
-.processes_commandline  = map_values(array(.processes_array) ?? []) -> |process| {
-  if (exists(process.commandLine) && process.commandLine != ""){
-    process.commandLine
-  } else {
-    "unknown commandLine"
-  }
-}
+# .processes_commandline = []
+# .processes_commandline  = map_values(array(.processes_array) ?? []) -> |process| {
+#   if (exists(process.commandLine) && process.commandLine != ""){
+#     process.commandLine
+#   } else {
+#     "unknown commandLine"
+#   }
+# }
 
-.processes_parentProcess = []
-.processes_parentProcess  = map_values(array(.processes_array) ?? []) -> |process| {
-  if (exists(process.parentProcess) && process.parentProcess != ""){
-    process.parentProcess
-  } else {
-    "unknown parentProcess"
-  }
-} 
+# .processes_parentProcess = []
+# .processes_parentProcess  = map_values(array(.processes_array) ?? []) -> |process| {
+#   if (exists(process.parentProcess) && process.parentProcess != ""){
+#     process.parentProcess
+#   } else {
+#     "unknown parentProcess"
+#   }
+# } 
 
 
 #========= Evidence - network
-.network_array = flatten!(.original_event.evidence.network)
+# .network_array = if exists(.original_event.evidence.network) {
+#     flatten!(.original_event.evidence.network)
+# } else {
+#     []
+# }
+.network_array = .original_event.evidence.network
+
 .network_application = []
 .network_application = map_values(array(.network_array) ?? []) -> |network| {
   if (exists(network.application) && network.application != ""){
@@ -124,6 +136,88 @@
   }
 }
 .network_connection_destination_port = unique(.network_connection_destination_port)
+
+.url_original = []
+.url_original = map_values(array(.network_array) ?? []) -> |network| {
+  if (exists(network.uri) && network.uri != ""){
+    parse_url!(network.uri ,default_known_ports: true)
+  } else {
+    "unknown network uri"
+  }
+}
+
+.url_registered_domain = []
+.url_registered_domain, err = map_values(array(.network_array) ?? []) -> |network| {
+  if (exists(network.uri) && network.uri != "") {
+    parsed = parse_url!(network.uri, default_known_ports: true) 
+    if exists(parsed.host) {
+      parts = split(parsed.host, ".")
+      if length(parts) >= 2 {
+        parts[-2] + "." + parts[-1]
+      } else {
+        parsed.host
+      }
+    } else {
+      "unknown domain"
+    }
+  } else {
+    "unknown domain"
+  }
+}
+
+.url_top_level_domain = []
+.url_top_level_domain = map_values(array(.network_array) ?? []) -> |network| {
+  if (exists(network.uri) && network.uri != "") {
+    parsed = parse_url!(network.uri, default_known_ports: true) 
+    if exists(parsed.host) {
+      parts = split(parsed.host, ".")
+      parts[-1]
+    } else {
+      "unknown domain"
+    }
+  } else {
+    "unknown domain"
+  }
+}
+
+.url_top_level_domain = []
+.url_top_level_domain = map_values(array(.network_array) ?? []) -> |network| {
+  if (exists(network.uri) && network.uri != "") {
+    parsed = parse_url!(network.uri, default_known_ports: true) 
+    if exists(parsed.host) {
+      parts = split(parsed.host, ".")
+      parts[-1]
+    } else {
+      "unknown top level domain"
+    }
+  } else {
+    "unknown top level domain"
+  }
+}
+
+.url_content_path = []
+.url_content_path = map_values(array(.network_array) ?? []) -> |network| {
+  if (exists(network.uri) && network.uri != "") {
+    parsed = parse_url!(network.uri, default_known_ports: true) 
+    if exists(parsed.path) {
+      parts_path = parsed.path
+    } else {
+      "No content path"
+    }
+  } else {
+    "No content path"
+  }
+}
+
+
+
+#======= URL, URI parts
+# https://blog.hubspot.com/marketing/parts-url
+# https://blog.hubspot.com/marketing/parts-url
+# https://vector.dev/docs/reference/vrl/functions/#compact
+# https://www.youtube.com/watch?v=F2FmTdLtb_4
+
+
 
 #========= DELETE unwanted fields 
 del(.message)
