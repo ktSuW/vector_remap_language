@@ -50,25 +50,40 @@
 # }
 
 #========= Evidence - processes
-# .processes_array = flatten!(.original_event.evidence.processes)
-# .processes_name = []
-# .processes_name = map_values(array(.processes_array) ?? []) -> |process| {
-#   if (exists(process.name) && process.name != ""){
-#     process.name
-#   } else {
-#     "unknown process name"
-#   }
-# }
+.processes_array = flatten!(.original_event.evidence.processes)
+.processes_name = []
+.processes_name = map_values(array(.processes_array) ?? []) -> |process| {
+  if (exists(process.name) && process.name != ""){
+    process.name
+  } else {
+    "unknown process name"
+  }
+}
 
 
-# .processes_commandline = []
-# .processes_commandline  = map_values(array(.processes_array) ?? []) -> |process| {
-#   if (exists(process.commandLine) && process.commandLine != ""){
-#     process.commandLine
-#   } else {
-#     "unknown commandLine"
-#   }
-# }
+.processes_commandline = []
+.processes_commandline  = map_values(array(.processes_array) ?? []) -> |process| {
+  if (exists(process.commandLine) && process.commandLine != ""){
+    process.commandLine
+  } else {
+    "unknown commandLine"
+  }
+}
+
+# Use regex pattern to extract - NOT working YET
+.processes_commandline_programs_executed = []
+
+for_each(array(.processes_commandline)) -> |_index, commandline| {
+  if is_string(commandline) {
+    parsed = parse_regex!(commandline, r'(?i)([^\\/]+\.exe)')
+    if parsed != null {
+      program = parsed.program
+      if program != null {
+        .processes_commandline_programs_executed = push(.processes_commandline_programs_executed, program)
+      }
+    }
+  }
+}
 
 # .processes_parentProcess = []
 # .processes_parentProcess  = map_values(array(.processes_array) ?? []) -> |process| {
@@ -86,128 +101,140 @@
 # } else {
 #     []
 # }
-.network_array = .original_event.evidence.network
+# .network_array = .original_event.evidence.network
 
-.network_application = []
-.network_application = map_values(array(.network_array) ?? []) -> |network| {
-  if (exists(network.application) && network.application != ""){
-    network.application
-  } else {
-    "unknown network application"
-  }
-}
+# .network_application = []
+# .network_application = map_values(array(.network_array) ?? []) -> |network| {
+#   if (exists(network.application) && network.application != ""){
+#     network.application
+#   } else {
+#     "unknown network application"
+#   }
+# }
 
-.network_connection_source_address = []
-.network_connection_source_address = map_values(array(.network_array) ?? []) -> |network| {
-  if (exists(network.connection) && network.connection != ""){
-    network.connection.source.address
-  } else {
-    "unknown network connection source connection"
-  }
-}
-.network_connection_source_address = unique(.network_connection_source_address)
+# .network_connection_source_address = []
+# .network_connection_source_address = map_values(array(.network_array) ?? []) -> |network| {
+#   if (exists(network.connection) && network.connection != ""){
+#     network.connection.source.address
+#   } else {
+#     "unknown network connection source connection"
+#   }
+# }
+# .network_connection_source_address = unique(.network_connection_source_address)
 
-.network_connection_source_port = []
-.network_connection_source_port = map_values(array(.network_array) ?? []) -> |network| {
-  if (exists(network.connection) && network.connection != ""){
-    network.connection.source.port
-  } else {
-    "unknown network connection source port"
-  }
-}
-.network_connection_source_port = unique(.network_connection_source_port)
+# .network_connection_source_port = []
+# .network_connection_source_port = map_values(array(.network_array) ?? []) -> |network| {
+#   if (exists(network.connection) && network.connection != ""){
+#     network.connection.source.port
+#   } else {
+#     "unknown network connection source port"
+#   }
+# }
+# .network_connection_source_port = unique(.network_connection_source_port)
 
-.network_connection_destination_address = []
-.network_connection_destination_address = map_values(array(.network_array) ?? []) -> |network| {
-  if (exists(network.connection) && network.connection != ""){
-    network.connection.destination.address
-  } else {
-    "unknown network connection destination connection"
-  }
-}
-.network_connection_destination_address = unique(.network_connection_destination_address)
+# .network_connection_destination_address = []
+# .network_connection_destination_address = map_values(array(.network_array) ?? []) -> |network| {
+#   if (exists(network.connection) && network.connection != ""){
+#     network.connection.destination.address
+#   } else {
+#     "unknown network connection destination connection"
+#   }
+# }
+# .network_connection_destination_address = unique(.network_connection_destination_address)
 
-.network_connection_destination_port = []
-.network_connection_destination_port = map_values(array(.network_array) ?? []) -> |network| {
-  if (exists(network.connection) && network.connection != ""){
-    network.connection.destination.port
-  } else {
-    "unknown network connection destination port"
-  }
-}
-.network_connection_destination_port = unique(.network_connection_destination_port)
+# .network_connection_destination_port = []
+# .network_connection_destination_port = map_values(array(.network_array) ?? []) -> |network| {
+#   if (exists(network.connection) && network.connection != ""){
+#     network.connection.destination.port
+#   } else {
+#     "unknown network connection destination port"
+#   }
+# }
+# .network_connection_destination_port = unique(.network_connection_destination_port)
 
-.url_original = []
-.url_original = map_values(array(.network_array) ?? []) -> |network| {
-  if (exists(network.uri) && network.uri != ""){
-    parse_url!(network.uri ,default_known_ports: true)
-  } else {
-    "unknown network uri"
-  }
-}
+# .url_full = []
+# .url_full = map_values(array(.network_array) ?? []) -> |network| {
+#   if (exists(network.uri) && network.uri != ""){
+#     network.uri
+#   } else {
+#     "unknown network uri"
+#   }
+# }
 
-.url_registered_domain = []
-.url_registered_domain, err = map_values(array(.network_array) ?? []) -> |network| {
-  if (exists(network.uri) && network.uri != "") {
-    parsed = parse_url!(network.uri, default_known_ports: true) 
-    if exists(parsed.host) {
-      parts = split(parsed.host, ".")
-      if length(parts) >= 2 {
-        parts[-2] + "." + parts[-1]
-      } else {
-        parsed.host
-      }
-    } else {
-      "unknown domain"
-    }
-  } else {
-    "unknown domain"
-  }
-}
+# .url_original = []
+# .url_original = map_values(array(.network_array) ?? []) -> |network| {
+#   if (exists(network.uri) && network.uri != ""){
+#     parse_url!(network.uri ,default_known_ports: true)
+#   } else {
+#     "unknown network uri"
+#   }
+# }
 
-.url_top_level_domain = []
-.url_top_level_domain = map_values(array(.network_array) ?? []) -> |network| {
-  if (exists(network.uri) && network.uri != "") {
-    parsed = parse_url!(network.uri, default_known_ports: true) 
-    if exists(parsed.host) {
-      parts = split(parsed.host, ".")
-      parts[-1]
-    } else {
-      "unknown domain"
-    }
-  } else {
-    "unknown domain"
-  }
-}
+# .url_registered_domain = []
+# .url_registered_domain, err = map_values(array(.network_array) ?? []) -> |network| {
+#   if (exists(network.uri) && network.uri != "") {
+#     parsed = parse_url!(network.uri, default_known_ports: true) 
+#     if exists(parsed.host) {
+#       parts = split(parsed.host, ".")
+#       if length(parts) >= 2 {
+#         parts[-2] + "." + parts[-1]
+#       } else {
+#         parsed.host
+#       }
+#     } else {
+#       "unknown domain"
+#     }
+#   } else {
+#     "unknown domain"
+#   }
+# }
 
-.url_top_level_domain = []
-.url_top_level_domain = map_values(array(.network_array) ?? []) -> |network| {
-  if (exists(network.uri) && network.uri != "") {
-    parsed = parse_url!(network.uri, default_known_ports: true) 
-    if exists(parsed.host) {
-      parts = split(parsed.host, ".")
-      parts[-1]
-    } else {
-      "unknown top level domain"
-    }
-  } else {
-    "unknown top level domain"
-  }
-}
+# .url_top_level_domain = []
+# .url_top_level_domain = map_values(array(.network_array) ?? []) -> |network| {
+#   if (exists(network.uri) && network.uri != "") {
+#     parsed = parse_url!(network.uri, default_known_ports: true) 
+#     if exists(parsed.host) {
+#       parts = split(parsed.host, ".")
+#       parts[-1]
+#     } else {
+#       "unknown domain"
+#     }
+#   } else {
+#     "unknown domain"
+#   }
+# }
 
-.url_content_path = []
-.url_content_path = map_values(array(.network_array) ?? []) -> |network| {
-  if (exists(network.uri) && network.uri != "") {
-    parsed = parse_url!(network.uri, default_known_ports: true) 
-    if exists(parsed.path) {
-      parts_path = parsed.path
-    } else {
-      "No content path"
-    }
-  } else {
-    "No content path"
-  }
-}
+# .url_top_level_domain = []
+# .url_top_level_domain = map_values(array(.network_array) ?? []) -> |network| {
+#   if (exists(network.uri) && network.uri != "") {
+#     parsed = parse_url!(network.uri, default_known_ports: true) 
+#     if exists(parsed.host) {
+#       parts = split(parsed.host, ".")
+#       parts[-1]
+#     } else {
+#       "unknown top level domain"
+#     }
+#   } else {
+#     "unknown top level domain"
+#   }
+# }
+
+# .url_content_path = []
+# .url_content_path = map_values(array(.network_array) ?? []) -> |network| {
+#   if (exists(network.uri) && network.uri != "") {
+#     parsed = parse_url!(network.uri, default_known_ports: true) 
+#     if exists(parsed.path) {
+#       parts_path = parsed.path
+#     } else {
+#       "No content path"
+#     }
+#   } else {
+#     "No content path"
+#   }
+# }
+
+#========== Regex 
+
 
 
 
@@ -224,3 +251,4 @@ del(.message)
 del(.original_event)
 del(.processes_array)
 del(.network_array)
+del(.url_original)

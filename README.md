@@ -103,3 +103,87 @@ This repo contains information about vector remap language.
 </details>
 
 ----
+
+<details>
+  <summary> Security related learning </summary>
+
+## Malicious.exe files types
+
+In real-world cyber attacks, there are numerous potentially malicious .exe files that attackers might use. Here are some examples of suspicious or malicious .exe files that security analysts should be aware of:
+
+- Remote Access Tools (RATs):
+
+PoisonIvy.exe
+DarkComet.exe
+njRAT.exe
+QuasarRAT.exe
+
+- Keyloggers:
+KeyLogger.exe
+PerfectKeylogger.exe
+Elite Keylogger.exe
+
+- Trojans:
+Zeus.exe
+Emotet.exe
+TrickBot.exe
+Dridex.exe
+
+- Ransomware:
+WannaCry.exe
+Ryuk.exe
+Locky.exe
+CryptoLocker.exe
+
+- Cryptocurrency miners:
+XMRig.exe
+NsCpuCNMiner64.exe
+
+- Backdoors:
+Backdoor.exe
+Netcat.exe (when used maliciously)
+
+- Exploit kits:
+BlackHole.exe
+Angler.exe
+
+- Password crackers (when used maliciously):
+Mimikatz.exe
+HashCat.exe
+
+- Malware droppers:
+Downloader.exe
+Dropper.exe
+
+- Command and Control (C2) tools:
+Cobalt Strike's beacon.exe
+Metasploit's meterpreter.exe
+
+- Data exfiltration tools:
+Exfil.exe
+DataStealer.exe
+
+- Suspicious system tools (when used in unusual contexts):
+PsExec.exe
+Regsvr32.exe
+Rundll32.exe
+
+- Maliciously named system files:
+Svchost.exe (in non-system folders)
+Explorer.exe (in non-system folders)
+
+- Obfuscated or randomly named executables:
+a.exe
+1234.exe
+temp_[random string].exe
+
+Remember, the presence of these file names doesn't always indicate malicious activity. Legitimate software may use similar names, and malware often uses disguised names to avoid detection. Context is crucial in determining whether an executable is malicious. Factors to consider include:
+
+The file's location
+Its digital signature
+The process that launched it
+Its network activity
+Its behavior on the system
+Always use multiple indicators and thorough analysis to determine if an executable is truly malicious.
+
+</details>

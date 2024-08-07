@@ -1,1 +1,226 @@
-{"id":"abcdef1234567890abcdef1234567890","tenantId":"0123456789abcdef0123456789abcdef","alertInfo":{"category":"AlertEntity","title":"Unusual file access pattern detected","severity":"Medium","status":"Active","timeline":{"created":"2023-06-16T14:22:33.9876543Z","lastUpdated":"2023-06-16T14:25:17.1234567Z","resolved":null},"classification":{"type":"UnderInvestigation","determination":"Suspicious"},"source":{"type":"FileActivityAlert","service":"MicrosoftDefenderForEndpoint","detection":"MachineLearning"},"threat":{"familyName":"Unknown","name":"Suspicious:Win32/UnusualAccess.A"}},"investigation":{"id":"987654-fedcba-3210","state":"InProgress","lastActionDateTime":"2023-06-16T14:23:45.6666666Z","recommendedActions":["Review file access logs","Check user permissions"]},"entities":{"devices":[{"deviceId":"9p8o7n6m5l4k3j2i1h0g9f8e7d6c5b4a","info":{"name":"WORKSTATION-DEF456","os":{"platform":"Windows10","build":19044,"version":"10.0.19044.2006"},"riskAssessment":{"score":"Medium","exposureLevel":"Low"},"security":{"isAadJoined":true,"defenderAvStatus":"Updated","onboardingStatus":"Onboarded"}}},{"deviceId":"3e4r5t6y7u8i9o0p1a2s3d4f5g6h7j8k","info":{"name":"LAPTOP-GHI789","os":{"platform":"Windows11","build":22621,"version":"22H2"},"riskAssessment":{"score":"Low","exposureLevel":"Minimal"},"security":{"isAadJoined":true,"defenderAvStatus":"Updated","onboardingStatus":"Onboarded"}}}],"users":[{"accountName":"alicesmith@contoso.com","domainName":"contoso.com","logonInfo":{"id":789012,"type":"Interactive","time":"2023-06-16T13:30:00.0000000Z"},"userSid":"S-1-5-21-2345678901-2345678901-2345678901-1003"},{"accountName":"bobjonson@contoso.com","domainName":"contoso.com","logonInfo":{"id":345678,"type":"Remote","time":"2023-06-16T13:15:00.0000000Z"},"userSid":"S-1-5-21-3456789012-3456789012-3456789012-2004"}]},"evidence":{"processes":[{"name":"explorer.exe","id":2345,"commandLine":"C:\\Windows\\explorer.exe","creationTime":"2023-06-16T14:20:00.0000000Z","integrity":{"level":"Medium","isElevated":false},"parentProcess":{"id":1234,"name":"userinit.exe","creationTime":"2023-06-16T14:19:59.9999999Z"}},{"name":"notepad.exe","id":3456,"commandLine":"notepad.exe C:\\Users\\alicesmith\\Documents\\sensitive_data.txt","creationTime":"2023-06-16T14:21:30.0000000Z","integrity":{"level":"Medium","isElevated":false},"parentProcess":{"id":2345,"name":"explorer.exe","creationTime":"2023-06-16T14:20:00.0000000Z"}}],"network":[{"application":"chrome.exe","connection":{"source":{"address":"192.168.1.105","port":49876},"destination":{"address":"172.217.167.78","port":443},"protocol":"TCP"},"uri":"https://www.google.com"},{"application":"outlook.exe","connection":{"source":{"address":"192.168.1.105","port":54321},"destination":{"address":"40.101.45.5","port":443},"protocol":"TCP"},"uri":"https://outlook.office365.com"}],"files":[{"name":"sensitive_data.txt","path":"C:\\Users\\alicesmith\\Documents\\sensitive_data.txt","hashes":{"sha1":"a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0","sha256":"1t2s3r4q5p6o7n8m9l0k1j2i3h4g5f6e7d8c9b0a1t2s3r4q5p6o7n8m9l0k","md5":"a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p"},"size":2048,"mimeType":"text/plain"},{"name":"report.xlsx","path":"C:\\Users\\alicesmith\\Documents\\report.xlsx","hashes":{"sha1":"1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t","sha256":"0t9s8r7q6p5o4n3m2l1k0j9i8h7g6f5e4d3c2b1a0t9s8r7q6p5o4n3m2l1k","md5":"1a2b3c4d5e6f7g7h8i9j0k1l2m3n4o5p"},"size":4096,"mimeType":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}]},"securityState":{"products":[{"name":"Windows Defender","status":"On","detectionMethod":"Signature-based","version":{"product":"4.18.2106.6","signatures":"1.341.2345.0"}},{"name":"Symantec Endpoint Protection","status":"On","detectionMethod":"Behavior-based","version":{"product":"14.3.3384.1000","signatures":"2023.06.16"}}],"vulnerabilities":[{"cve":"CVE-2023-28252","severity":"High","wasRunning":false},{"cve":"CVE-2023-24880","severity":"Medium","wasRunning":true}]},"riskAssessment":{"score":65,"state":"Medium","factors":["UnusualFileAccess","SensitiveDataExposure","AnomalousUserBehavior"]}}
+{
+    "id": "abcdef1234567890abcdef1234567890",
+    "tenantId": "0123456789abcdef0123456789abcdef",
+    "alertInfo": {
+        "category": "AlertEntity",
+        "title": "Unusual file access pattern detected",
+        "severity": "Medium",
+        "status": "Active",
+        "timeline": {
+            "created": "2023-06-16T14:22:33.9876543Z",
+            "lastUpdated": "2023-06-16T14:25:17.1234567Z",
+            "resolved": null
+        },
+        "classification": {
+            "type": "UnderInvestigation",
+            "determination": "Suspicious"
+        },
+        "source": {
+            "type": "FileActivityAlert",
+            "service": "MicrosoftDefenderForEndpoint",
+            "detection": "MachineLearning"
+        },
+        "threat": {
+            "familyName": "Unknown",
+            "name": "Suspicious:Win32/UnusualAccess.A"
+        }
+    },
+    "investigation": {
+        "id": "987654-fedcba-3210",
+        "state": "InProgress",
+        "lastActionDateTime": "2023-06-16T14:23:45.6666666Z",
+        "recommendedActions": [
+            "Review file access logs",
+            "Check user permissions"
+        ]
+    },
+    "entities": {
+        "devices": [
+            {
+                "deviceId": "9p8o7n6m5l4k3j2i1h0g9f8e7d6c5b4a",
+                "info": {
+                    "name": "WORKSTATION-DEF456",
+                    "os": {
+                        "platform": "Windows10",
+                        "build": 19044,
+                        "version": "10.0.19044.2006"
+                    },
+                    "riskAssessment": {
+                        "score": "Medium",
+                        "exposureLevel": "Low"
+                    },
+                    "security": {
+                        "isAadJoined": true,
+                        "defenderAvStatus": "Updated",
+                        "onboardingStatus": "Onboarded"
+                    }
+                }
+            },
+            {
+                "deviceId": "3e4r5t6y7u8i9o0p1a2s3d4f5g6h7j8k",
+                "info": {
+                    "name": "LAPTOP-GHI789",
+                    "os": {
+                        "platform": "Windows11",
+                        "build": 22621,
+                        "version": "22H2"
+                    },
+                    "riskAssessment": {
+                        "score": "Low",
+                        "exposureLevel": "Minimal"
+                    },
+                    "security": {
+                        "isAadJoined": true,
+                        "defenderAvStatus": "Updated",
+                        "onboardingStatus": "Onboarded"
+                    }
+                }
+            }
+        ],
+        "users": [
+            {
+                "accountName": "bobjonson@contoso.com",
+                "domainName": "contoso.com",
+                "logonInfo": {
+                    "id": 345678,
+                    "type": "Remote",
+                    "time": "2023-06-16T13:15:00.0000000Z"
+                },
+                "userSid": "S-1-5-21-3456789012-3456789012-3456789012-2004"
+            }
+        ]
+    },
+    "evidence": {
+        "processes": [
+            {
+                "name": "explorer.exe",
+                "id": 2345,
+                "commandLine": "C:\\Windows\\explorer.exe",
+                "creationTime": "2023-06-16T14:20:00.0000000Z",
+                "integrity": {
+                    "level": "Medium",
+                    "isElevated": false
+                },
+                "parentProcess": {
+                    "id": 1234,
+                    "name": "userinit.exe",
+                    "creationTime": "2023-06-16T14:19:59.9999999Z"
+                }
+            },
+            {
+                "name": "notepad.exe",
+                "id": 3456,
+                "commandLine": "notepad.exe C:\\Users\\alicesmith\\Documents\\sensitive_data.txt",
+                "creationTime": "2023-06-16T14:21:30.0000000Z",
+                "integrity": {
+                    "level": "Medium",
+                    "isElevated": false
+                },
+                "parentProcess": {
+                    "id": 2345,
+                    "name": "explorer.exe",
+                    "creationTime": "2023-06-16T14:20:00.0000000Z"
+                }
+            }
+        ],
+        "network": [
+            {
+                "application": "chrome.exe",
+                "connection": {
+                    "source": {
+                        "address": "192.168.1.105",
+                        "port": 49876
+                    },
+                    "destination": {
+                        "address": "172.217.167.78",
+                        "port": 443
+                    },
+                    "protocol": "TCP"
+                },
+                "uri": "https://blog.hubspot.com/marketing/parts-url"
+            },
+            {
+                "application": "outlook.exe",
+                "connection": {
+                    "source": {
+                        "address": "192.168.1.105",
+                        "port": 54321
+                    },
+                    "destination": {
+                        "address": "40.101.45.5",
+                        "port": 443
+                    },
+                    "protocol": "TCP"
+                },
+                "uri": "https://vector.dev/docs/reference/vrl/functions/#compact"
+            }
+        ],
+        "files": [
+            {
+                "name": "sensitive_data.txt",
+                "path": "C:\\Users\\alicesmith\\Documents\\sensitive_data.txt",
+                "hashes": {
+                    "sha1": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0",
+                    "sha256": "1t2s3r4q5p6o7n8m9l0k1j2i3h4g5f6e7d8c9b0a1t2s3r4q5p6o7n8m9l0k",
+                    "md5": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p"
+                },
+                "size": 2048,
+                "mimeType": "text/plain"
+            },
+            {
+                "name": "report.xlsx",
+                "path": "C:\\Users\\alicesmith\\Documents\\report.xlsx",
+                "hashes": {
+                    "sha1": "1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t",
+                    "sha256": "0t9s8r7q6p5o4n3m2l1k0j9i8h7g6f5e4d3c2b1a0t9s8r7q6p5o4n3m2l1k",
+                    "md5": "1a2b3c4d5e6f7g7h8i9j0k1l2m3n4o5p"
+                },
+                "size": 4096,
+                "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            }
+        ]
+    },
+    "securityState": {
+        "products": [
+            {
+                "name": "Windows Defender",
+                "status": "On",
+                "detectionMethod": "Signature-based",
+                "version": {
+                    "product": "4.18.2106.6",
+                    "signatures": "1.341.2345.0"
+                }
+            },
+            {
+                "name": "Symantec Endpoint Protection",
+                "status": "On",
+                "detectionMethod": "Behavior-based",
+                "version": {
+                    "product": "14.3.3384.1000",
+                    "signatures": "2023.06.16"
+                }
+            }
+        ],
+        "vulnerabilities": [
+            {
+                "cve": "CVE-2023-28252",
+                "severity": "High",
+                "wasRunning": false
+            },
+            {
+                "cve": "CVE-2023-24880",
+                "severity": "Medium",
+                "wasRunning": true
+            }
+        ]
+    },
+    "riskAssessment": {
+        "score": 65,
+        "state": "Medium",
+        "factors": [
+            "UnusualFileAccess",
+            "SensitiveDataExposure",
+            "AnomalousUserBehavior"
+        ]
+    }
+}
